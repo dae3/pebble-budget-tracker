@@ -1,0 +1,53 @@
+{
+    "appKeys": {
+        "MSGKEY_AMOUNT": 1,
+        "MSGKEY_NAME": 0,
+        "MSGKEY_TIMEOUT": 2
+    },
+    "capabilities": [
+        ""
+    ],
+    "companyName": "deverett@gmail.com",
+    "enableMultiJS": false,
+    "longName": "Budget",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/arrow-7-up_0-18.png",
+                "name": "ACTION_BAR_ARROW_UP",
+                "targetPlatforms": null,
+                "type": "png"
+            },
+            {
+                "file": "images/arrow-circular-alt-1-18.png",
+                "name": "ACTION_BAR_REFRESH",
+                "targetPlatforms": null,
+                "type": "png"
+            },
+            {
+                "file": "images/arrow-8-down_0-18.png",
+                "name": "ACTION_BAR_ARROW_DOWN",
+                "targetPlatforms": null,
+                "type": "png"
+            },
+            {
+                "file": "images/menu-image.png",
+                "menuIcon": true,
+                "name": "MENU_IMAGE",
+                "targetPlatforms": null,
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Budget",
+    "targetPlatforms": [
+        "basalt"
+    ],
+    "uuid": "7d279d77-9de7-4ff6-b07e-a6204744cc4c",
+    "versionLabel": "0.3",
+    "watchapp": {
+        "watchface": false
+    }
+}
