@@ -19,7 +19,7 @@ void display_BudgetLine(BudgetLine *line) {
 
 // Window stuff
 static void set_loading_message() {
-  snprintf(title, sizeof(title), "loading...");
+  snprintf(title, sizeof(title), "Loading...");
   snprintf(amount, sizeof(amount), "$0.00");
   text_layer_set_text(textl_title, title);
   text_layer_set_text(textl_amount, amount);

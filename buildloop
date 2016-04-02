@@ -1,0 +1,1 @@
+ls src/*.c | entr ./build-and-eminstall

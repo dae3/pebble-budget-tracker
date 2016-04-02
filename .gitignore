@@ -1,2 +1,5 @@
 # exclude build output
 build
+
+# junk
+.lock-waf_linux2_build
