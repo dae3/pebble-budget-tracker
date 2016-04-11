@@ -1,1 +1,1 @@
-ls src/*.c | entr ./build-and-eminstall
+ls src/*.c src/*.h | entr ./build-and-eminstall
