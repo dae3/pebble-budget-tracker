@@ -46,15 +46,15 @@ static void long_click_handler(ClickRecognizerRef recog, void *context) {
   // TODO move the non UI stuff out of here
   DictionaryIterator *d;
     
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "select_click_handler top");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler top");
   
   set_loading_message();
   
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "select_click_handler post slm");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler post slm");
   
   freeBudgetData();
   
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "select_click_handler post fbd");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler post fbd");
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "about to peek PebbleKit connection");
   if (connection_service_peek_pebble_app_connection()) {
@@ -87,11 +87,11 @@ static void main_window_load(Window *window) {
   
   // setup action bar
   action_bar = action_bar_layer_create();
-  //action_bar_layer_set_background_color(action_bar, GColorArmyGreen);
-  action_bar_layer_set_background_color(action_bar, GColorWhite);
+  action_bar_layer_set_background_color(action_bar, GColorArmyGreen);
+  //action_bar_layer_set_background_color(action_bar, GColorWhite);
   
   icon_up = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_ARROW_UP);
-  icon_refresh = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_REFRESH);
+  icon_refresh = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_PLUS);
   icon_down = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_ARROW_DOWN);
   
   action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, icon_up);
@@ -100,18 +100,22 @@ static void main_window_load(Window *window) {
   
   action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
   
-  action_bar_layer_add_to_window(action_bar, me);
 
   // setup text layers
   textl_title = text_layer_create(GRect(0, 25, 144, 30));
   text_layer_set_font(textl_title, fonts_get_system_font(FONT_KEY_GOTHIC_24));
   
   textl_amount = text_layer_create(GRect(0, 55, 144, 100));
-  text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT));
+  //text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_LECO_36_BOLD_NUMBERS));
+  // text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT));
+  text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS));
   
   layer_add_child(window_get_root_layer(me), text_layer_get_layer(textl_title));
   layer_add_child(window_get_root_layer(me), text_layer_get_layer(textl_amount));
   
+	// add action bar last so it overlaps the text	
+  action_bar_layer_add_to_window(action_bar, me);
+
   set_loading_message();
 }
 
@@ -135,5 +139,6 @@ Window *create_main_window() {
 }
 
 void destroy_main_window() {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "main window destroy");
   window_destroy(me);
 }

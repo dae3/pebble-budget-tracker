@@ -16,30 +16,30 @@
             {
                 "file": "images/arrow-7-up_0-18.png",
                 "name": "ACTION_BAR_ARROW_UP",
-                "targetPlatforms": null,
                 "type": "png"
             },
             {
                 "file": "images/arrow-circular-alt-1-18.png",
                 "name": "ACTION_BAR_REFRESH",
-                "targetPlatforms": null,
                 "type": "png"
             },
             {
                 "file": "images/arrow-8-down_0-18.png",
                 "name": "ACTION_BAR_ARROW_DOWN",
-                "targetPlatforms": null,
                 "type": "png"
             },
             {
                 "file": "images/menu-image.png",
                 "menuIcon": true,
                 "name": "MENU_IMAGE",
-                "targetPlatforms": null,
                 "type": "png"
-            }
-        ]
-    },
+            },
+            {
+                "file": "images/add_16px_1074531_easyicon.net.png",
+                "name": "ACTION_BAR_PLUS",
+		 "type": "png"
+	} ] },
+
     "sdkVersion": "3",
     "shortName": "Budget",
     "targetPlatforms": [

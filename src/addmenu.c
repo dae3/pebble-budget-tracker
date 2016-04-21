@@ -3,12 +3,16 @@
 static Window *me;
 
 // menu data
+// callback function forward definitions
+void menu_callback(int index, void *context);
+
 SimpleMenuLayer *menu;
 SimpleMenuItem menu_items[] = {
-  { "title1", NULL, NULL, NULL },
-  { "title2", NULL, NULL, NULL }
+  { "Coffee", "$2", NULL, menu_callback },
+  { "Coffee", "$3.50", NULL, menu_callback },
+  { "Drinks", "$20", NULL, menu_callback },
 };
-static SimpleMenuSection section = { "sectiontitle", menu_items, 2 };
+static SimpleMenuSection section = { "Add an expense", menu_items, 3 };
 
 
 // window load and unload
@@ -36,3 +40,9 @@ Window *create_add_window(void) {
 void destroy_add_window() {
   window_destroy(me);
 }
+
+
+void menu_callback(int index, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "menu callback: %d", index);
+}
+
