@@ -3,3 +3,4 @@ build
 
 # junk
 .lock-waf_linux2_build
+*.swp

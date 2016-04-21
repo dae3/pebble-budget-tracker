@@ -3,7 +3,7 @@ var jsAppState = JSAPPSTATE.INITWAIT;
 var TIMEOUT = 2000;
 var bdata;
 var bdataidx;
-var aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+var aud = new Intl.NumberFormat("en-AU", { style: "decimal", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 	
 function getBudgetInfo() {   

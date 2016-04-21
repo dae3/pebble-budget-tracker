@@ -19,7 +19,7 @@ void display_BudgetLine(BudgetLine *line) {
 
 static void set_loading_message() {
   snprintf(title, sizeof(title), "Loading...");
-  snprintf(amount, sizeof(amount), "$0.00");
+  snprintf(amount, sizeof(amount), "0.00");
   text_layer_set_text(textl_title, title);
   text_layer_set_text(textl_amount, amount);
 }
@@ -40,6 +40,10 @@ static void up_click_handler(ClickRecognizerRef recog, void *context) {
   if (current_line->prev != NULL) {
     display_BudgetLine(current_line->prev);
   }
+}
+
+static void long_click_up_handler(ClickRecognizerRef recog, void *context) {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "long_click_up_handler");    
 }
 
 static void long_click_handler(ClickRecognizerRef recog, void *context) {
@@ -75,10 +79,10 @@ static void long_click_handler(ClickRecognizerRef recog, void *context) {
 
 
 static void click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 0, long_click_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 0, long_click_handler, long_click_up_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
 }
 
 static void main_window_load(Window *window) {
