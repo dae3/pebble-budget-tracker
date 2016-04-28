@@ -77,7 +77,6 @@ static void long_click_handler(ClickRecognizerRef recog, void *context) {
   }
 }
 
-
 static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
@@ -91,8 +90,8 @@ static void main_window_load(Window *window) {
   
   // setup action bar
   action_bar = action_bar_layer_create();
-  action_bar_layer_set_background_color(action_bar, GColorArmyGreen);
-  //action_bar_layer_set_background_color(action_bar, GColorWhite);
+  // action_bar_layer_set_background_color(action_bar, GColorArmyGreen);
+  action_bar_layer_set_background_color(action_bar, GColorWhite);
   
   icon_up = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_ARROW_UP);
   icon_refresh = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_PLUS);
@@ -106,10 +105,10 @@ static void main_window_load(Window *window) {
   
 
   // setup text layers
-  textl_title = text_layer_create(GRect(0, 25, 144, 30));
+  textl_title = text_layer_create(GRect(5, 35, 144, 30));
   text_layer_set_font(textl_title, fonts_get_system_font(FONT_KEY_GOTHIC_24));
   
-  textl_amount = text_layer_create(GRect(0, 55, 144, 100));
+  textl_amount = text_layer_create(GRect(5, 65, 144, 100));
   //text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_LECO_36_BOLD_NUMBERS));
   // text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT));
   text_layer_set_font(textl_amount, fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS));
@@ -124,7 +123,6 @@ static void main_window_load(Window *window) {
 }
 
 static void main_window_unload(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "main window unload");
   text_layer_destroy(textl_title);  
   text_layer_destroy(textl_amount);
   
@@ -143,6 +141,5 @@ Window *create_main_window() {
 }
 
 void destroy_main_window() {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "main window destroy");
   window_destroy(me);
 }

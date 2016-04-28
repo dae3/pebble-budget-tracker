@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "appmsgkeys.h"
 
 static Window *me;
 
@@ -42,7 +43,25 @@ void destroy_add_window() {
 }
 
 
+
+// app message back to JS app
+void addExpense(char *description, char *category, long *value) {
+	DictionaryIterator *dict;
+	
+	if (app_message_outbox_begin(&dict) == APP_MSG_OK) {
+		dict_write_cstring(dict, MSGKEY_NEWEXPENSEDESC, description);
+		dict_write_uint16(dict, MSGKEY_NEWEXPENSEVALUE, *value);
+		dict_write_end(dict);
+		app_message_outbox_send();
+	} else {
+		APP_LOG(APP_LOG_LEVEL_ERROR, "app_message_outbox_begin fail");
+	}
+}
+
 void menu_callback(int index, void *context) {
+	char desc[] = "testdesc";
+	long value = 123.45;
   APP_LOG(APP_LOG_LEVEL_DEBUG, "menu callback: %d", index);
+	addExpense(desc, NULL, &value);
 }
 

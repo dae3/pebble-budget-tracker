@@ -5,10 +5,28 @@ var bdata;
 var bdataidx;
 var aud = new Intl.NumberFormat("en-AU", { style: "decimal", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
+var GAS_APP = 'https://script.google.com/macros/s/AKfycby5JM15iJ5NuBjswu9swwB7Vpx666aCXObA2NHO0-eFnchhjTQ/exec';
+
+function addExpense(description, category, value) {
+	var req = new XMLHttpRequest();
 	
+	console.log("addExpense " + description + " '" + value + "'");
+
+  req.open('POST', GAS_APP);   
+  req.timeout = TIMEOUT;
+	req.onload = function(e) { console.log("addExp xhr onload"); };
+  req.ontimeout = function(e) { console.log("addExp xhr timeout"); };
+
+	var d = new FormData();
+	d.append('desc', description);
+	d.append('value', value);
+
+	req.send(d);
+}
+
 function getBudgetInfo() {   
   var req = new XMLHttpRequest();
-  req.open('GET', 'https://script.google.com/macros/s/AKfycby5JM15iJ5NuBjswu9swwB7Vpx666aCXObA2NHO0-eFnchhjTQ/exec');   
+  req.open('GET', GAS_APP);   
   req.timeout = TIMEOUT;
   req.onload = function(e) {
     if (req.readyState == 4 && req.status == 200) {  
@@ -66,8 +84,14 @@ function readyMessageHandler(e) {
 
 Pebble.addEventListener('ready', readyMessageHandler);
 
-//Pebble.addEventListener('appmessage', function(e) { console.log("appmsg"); getBudgetInfo(); });
 Pebble.addEventListener('appmessage', function(e) {
 	console.log("appmsg");
-	addExpense();
-	});
+
+	var dict = e.payload;
+	category = '';
+	if (dict['MSGKEY_NEWEXPENSEDESC'] && dict['MSGKEY_NEWEXPENSEVALUE']) {
+				desc = dict['MSGKEY_NEWEXPENSEDESC'];
+				value = dict['MSGKEY_NEWEXPENSEVALUE'];
+				addExpense(desc, category, value);
+				}
+});

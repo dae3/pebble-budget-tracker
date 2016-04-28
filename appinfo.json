@@ -2,7 +2,10 @@
     "appKeys": {
         "MSGKEY_AMOUNT": 1,
         "MSGKEY_NAME": 0,
-        "MSGKEY_TIMEOUT": 2
+        "MSGKEY_TIMEOUT": 2,
+        "MSGKEY_NEWEXPENSEDESC": 3,
+        "MSGKEY_NEWEXPENSECAT": 4,
+        "MSGKEY_NEWEXPENSEVALUE": 5
     },
     "capabilities": [
         ""

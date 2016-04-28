@@ -17,6 +17,8 @@ void freeBudgetData(void) {
   
   budget_data->first = NULL;
   budget_data->last = NULL;
+
+	free(budget_data);
 }
 
 BudgetLine *storeBudgetLine(char *name, char *amount) {
