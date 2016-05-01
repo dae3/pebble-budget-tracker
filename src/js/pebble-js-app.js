@@ -11,17 +11,19 @@ function addExpense(description, category, value) {
 	var req = new XMLHttpRequest();
 	
 	console.log("addExpense " + description + " '" + value + "'");
+	reqbody = "desc=" + description + "&value=" + value;
 
   req.open('POST', GAS_APP);   
   req.timeout = TIMEOUT;
-	req.onload = function(e) { console.log("addExp xhr onload"); };
+	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	req.onload = function(e) { console.log("addExp xhr onload " + req.readyState + " " + req.statusText); };
   req.ontimeout = function(e) { console.log("addExp xhr timeout"); };
 
-	var d = new FormData();
-	d.append('desc', description);
-	d.append('value', value);
+	//var d = new FormData();
+	//d.append('desc', description);
+	//d.append('value', value);
 
-	req.send(d);
+	req.send(reqbody);
 }
 
 function getBudgetInfo() {   

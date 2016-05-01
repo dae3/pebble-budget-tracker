@@ -1,5 +1,16 @@
 #include <pebble.h>
+#include <math.h>
 #include "appmsgkeys.h"
+#include "float_to_int.h"
+
+struct expdata { float value; char *description; };
+
+static const struct expdata initdata[] = {
+  { 3.50, "Coffee" },
+  { 2.00, "Coffee" },
+  { 15.00, "Lunch" }
+};
+static const int ninitdata = 3;
 
 static Window *me;
 
@@ -7,26 +18,82 @@ static Window *me;
 // callback function forward definitions
 void menu_callback(int index, void *context);
 
-SimpleMenuLayer *menu;
-SimpleMenuItem menu_items[] = {
-  { "Coffee", "$2", NULL, menu_callback },
-  { "Coffee", "$3.50", NULL, menu_callback },
-  { "Drinks", "$20", NULL, menu_callback },
+static const char section_title[] = "Add expense";
+
+static SimpleMenuLayer *menu;
+static SimpleMenuItem *menu_items;
+static SimpleMenuSection menu_section;
+
+struct expense_item  {
+  char *description;
+  char *category;
+  char *value_as_string;
+  float value;
 };
-static SimpleMenuSection section = { "Add an expense", menu_items, 3 };
+
+static struct expense_item *expenses;
+	
+/* Read common expense data from preferences, allocate and load into SimpleMenulayer and internal 
+   data structures */
+void unload_expenses() {
+  int i;
+
+  for (i = 0; i < ninitdata; i++) {
+    free(expenses[i].description);
+    free(expenses[i].value_as_string);
+  }
+
+  free(menu_items);
+  free(expenses);
+}
+
+void load_expenses() {
+  int i;
+
+  expenses = calloc(sizeof(struct expense_item), ninitdata);
+  menu_items = calloc(sizeof(SimpleMenuItem), ninitdata);
+	
+  if (expenses == NULL || menu_items == NULL) {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "couldn't calloc for expenses");
+  } else {
+    for (i = 0; i < ninitdata; i++) {
+      //TODO malloc fail check
+      expenses[i].description = (char*)malloc(strlen(initdata[i].description)+1);
+      strncpy(expenses[i].description, initdata[i].description, strlen(initdata[i].description));
+      format_float_as_string(&expenses[i].value_as_string, initdata[i].value);
+      
+      expenses[i].value = initdata[i].value;
+      menu_items[i].title = (const char*)expenses[i].description;
+      menu_items[i].subtitle = (const char*)expenses[i].value_as_string;
+      menu_items[i].callback = menu_callback;
+
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "loade %s %s", initdata[i].description, expenses[i].value_as_string);
+    }
+  }
+}
+
+	
 
 
 // window load and unload
 static void window_handler_load(Window *w) {
-  SimpleMenuLayer *m;
-
   APP_LOG(APP_LOG_LEVEL_DEBUG, "addexp_window_handler_load");
-  menu = simple_menu_layer_create(GRect(0,0,150,150), w, &section, 1, NULL);
+
+  load_expenses();
+
+  menu_section.title = section_title;
+  menu_section.items = menu_items;
+  menu_section.num_items = ninitdata;
+
+  menu = simple_menu_layer_create(GRect(0,0,150,150), w, &menu_section, 1, NULL);
   layer_add_child(window_get_root_layer(me), simple_menu_layer_get_layer(menu));
 }
 
 static void window_handler_unload(Window *w) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "addexp_window_handler_unload");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "addexp_window_handler_unload"); 
+
+  unload_expenses();
+
   simple_menu_layer_destroy(menu);
 }
 
@@ -43,25 +110,19 @@ void destroy_add_window() {
 }
 
 
-
-// app message back to JS app
-void addExpense(char *description, char *category, long *value) {
-	DictionaryIterator *dict;
-	
-	if (app_message_outbox_begin(&dict) == APP_MSG_OK) {
-		dict_write_cstring(dict, MSGKEY_NEWEXPENSEDESC, description);
-		dict_write_uint16(dict, MSGKEY_NEWEXPENSEVALUE, *value);
-		dict_write_end(dict);
-		app_message_outbox_send();
-	} else {
-		APP_LOG(APP_LOG_LEVEL_ERROR, "app_message_outbox_begin fail");
-	}
-}
-
 void menu_callback(int index, void *context) {
-	char desc[] = "testdesc";
-	long value = 123.45;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "menu callback: %d", index);
-	addExpense(desc, NULL, &value);
+  DictionaryIterator *dict;
+
+  if (app_message_outbox_begin(&dict) == APP_MSG_OK) {
+
+    dict_write_cstring(dict, MSGKEY_NEWEXPENSEDESC, expenses[index].description);
+    dict_write_cstring(dict, MSGKEY_NEWEXPENSEVALUE, expenses[index].value_as_string);
+    dict_write_end(dict);
+    app_message_outbox_send();
+  } else {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "app_message_outbox_begin fail");
+  }
+
+
 }
 
