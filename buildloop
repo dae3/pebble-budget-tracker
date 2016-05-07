@@ -1,1 +1,1 @@
-ls -R src/*.js src/*.c src/*.h | entr ./build-and-eminstall
+find . -name *.[ch] -or -name *.js | entr ./build-and-eminstall

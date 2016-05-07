@@ -6,11 +6,12 @@
 struct expdata { float value; char *description; };
 
 static const struct expdata initdata[] = {
+  { 0.01, "Test" },
   { 3.50, "Coffee" },
   { 2.00, "Coffee" },
   { 15.00, "Lunch" }
 };
-static const int ninitdata = 3;
+static const int ninitdata = 4;
 
 static Window *me;
 
@@ -35,7 +36,7 @@ static struct expense_item *expenses;
 	
 /* Read common expense data from preferences, allocate and load into SimpleMenulayer and internal 
    data structures */
-void unload_expenses() {
+static void unload_expenses() {
   int i;
 
   for (i = 0; i < ninitdata; i++) {
@@ -47,7 +48,7 @@ void unload_expenses() {
   free(expenses);
 }
 
-void load_expenses() {
+static void load_expenses() {
   int i;
 
   expenses = calloc(sizeof(struct expense_item), ninitdata);
@@ -67,18 +68,14 @@ void load_expenses() {
       menu_items[i].subtitle = (const char*)expenses[i].value_as_string;
       menu_items[i].callback = menu_callback;
 
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "loade %s %s", initdata[i].description, expenses[i].value_as_string);
+      /* APP_LOG(APP_LOG_LEVEL_DEBUG, "loade %s %s", initdata[i].description, expenses[i].value_as_string); */
     }
   }
 }
 
-	
-
 
 // window load and unload
 static void window_handler_load(Window *w) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "addexp_window_handler_load");
-
   load_expenses();
 
   menu_section.title = section_title;
@@ -90,10 +87,7 @@ static void window_handler_load(Window *w) {
 }
 
 static void window_handler_unload(Window *w) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "addexp_window_handler_unload"); 
-
   unload_expenses();
-
   simple_menu_layer_destroy(menu);
 }
 
@@ -102,7 +96,6 @@ Window *create_add_window(void) {
   window_set_window_handlers(me, (WindowHandlers) { .load = window_handler_load, .unload = window_handler_unload });
 
   return me;
-
 }
 				 
 void destroy_add_window() {
@@ -115,6 +108,7 @@ void menu_callback(int index, void *context) {
 
   if (app_message_outbox_begin(&dict) == APP_MSG_OK) {
 
+    dict_write_uint8(dict, MSGKEY_TYPE, TYPE_ADD);
     dict_write_cstring(dict, MSGKEY_NEWEXPENSEDESC, expenses[index].description);
     dict_write_cstring(dict, MSGKEY_NEWEXPENSEVALUE, expenses[index].value_as_string);
     dict_write_end(dict);
@@ -122,7 +116,5 @@ void menu_callback(int index, void *context) {
   } else {
     APP_LOG(APP_LOG_LEVEL_ERROR, "app_message_outbox_begin fail");
   }
-
-
 }
 

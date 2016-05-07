@@ -9,12 +9,20 @@ static TextLayer *textl_title, *textl_amount;
 static char title[20], amount[10];
 // $A0000.00 + \0 is 10
 static BudgetLine *current_line;
+static char *status_message;
 
 void display_BudgetLine(BudgetLine *line) {
   current_line = line;
   
   text_layer_set_text(textl_title, line->name);
   text_layer_set_text(textl_amount, line->amount);
+}
+
+void set_status_message(char *message) {
+  status_message = (char*)malloc(strlen(message)+1);
+  
+  strncpy(status_message, message, strlen(message));
+  text_layer_set_text(textl_title, status_message);
 }
 
 static void set_loading_message() {
@@ -47,34 +55,7 @@ static void long_click_up_handler(ClickRecognizerRef recog, void *context) {
 }
 
 static void long_click_handler(ClickRecognizerRef recog, void *context) {
-  // TODO move the non UI stuff out of here
-  DictionaryIterator *d;
-    
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler top");
-  
-  set_loading_message();
-  
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler post slm");
-  
-  freeBudgetData();
-  
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "long_click_handler post fbd");
-
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "about to peek PebbleKit connection");
-  if (connection_service_peek_pebble_app_connection()) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "about to send reload appmsg");
-    if (app_message_outbox_begin(&d) == APP_MSG_OK) {
-      if (dict_write_int8(d, 0, 0) == DICT_OK) {
-        dict_write_end(d);
-        app_message_outbox_send();
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "reload appmsg sent");
-      }
-    } else {
-      APP_LOG(APP_LOG_LEVEL_ERROR, "AppMessage outbox init fail");
-    }
-  } else {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "no connection to PebbleKit");    
-  }
+  // TODO make this into a refresh
 }
 
 static void click_config_provider(void *context) {
@@ -90,7 +71,6 @@ static void main_window_load(Window *window) {
   
   // setup action bar
   action_bar = action_bar_layer_create();
-  // action_bar_layer_set_background_color(action_bar, GColorArmyGreen);
   action_bar_layer_set_background_color(action_bar, GColorWhite);
   
   icon_up = gbitmap_create_with_resource(RESOURCE_ID_ACTION_BAR_ARROW_UP);
@@ -102,7 +82,6 @@ static void main_window_load(Window *window) {
   action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, icon_down);
   
   action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
-  
 
   // setup text layers
   textl_title = text_layer_create(GRect(5, 35, 144, 30));
@@ -116,7 +95,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(me), text_layer_get_layer(textl_title));
   layer_add_child(window_get_root_layer(me), text_layer_get_layer(textl_amount));
   
-	// add action bar last so it overlaps the text	
+  // add action bar last so it overlaps the text	
   action_bar_layer_add_to_window(action_bar, me);
 
   set_loading_message();
@@ -141,5 +120,7 @@ Window *create_main_window() {
 }
 
 void destroy_main_window() {
+  if (status_message != NULL)
+    free(status_message);
   window_destroy(me);
 }
