@@ -8,7 +8,7 @@ struct expdata { float value; char *description; };
 static const struct expdata initdata[] = {
   { 0.01, "Test" },
   { 3.50, "Coffee" },
-  { 2.00, "Coffee" },
+  { 7.00, "Coffee" },
   { 15.00, "Lunch" }
 };
 static const int ninitdata = 4;
